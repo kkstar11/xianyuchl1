@@ -153,8 +153,16 @@ mysql -u root -p xianyudb < xianyudb_backup.sql
 1. **字符编码**: 数据库使用 UTF-8 (utf8mb4) 编码以支持中文和表情符号
 2. **外键约束**: 使用 `ON DELETE CASCADE` 确保数据一致性
 3. **索引优化**: 在常用查询字段上创建了索引以提高性能
-4. **密码安全**: 示例数据中的密码是明文，生产环境应使用加密密码
-5. **DDL-AUTO**: 
+4. **密码安全**: 
+   - ⚠️ 示例数据中的密码是明文，**仅用于开发和测试**
+   - 生产环境**必须**使用加密密码（推荐使用 BCrypt、Argon2 等）
+   - Spring Security 提供了 `BCryptPasswordEncoder` 用于密码加密
+5. **数据库用户权限**: 
+   - ⚠️ 生产环境**不要**使用 root 账户连接数据库
+   - 创建专用应用账户并授予最小必要权限
+   - 示例：`CREATE USER 'xianyuapp'@'localhost' IDENTIFIED BY 'secure_password';`
+   - 示例：`GRANT SELECT, INSERT, UPDATE, DELETE ON xianyudb.* TO 'xianyuapp'@'localhost';`
+6. **DDL-AUTO**: 
    - 开发环境使用 `update` - 自动更新表结构
    - 生产环境建议使用 `validate` - 仅验证表结构，不自动修改
 

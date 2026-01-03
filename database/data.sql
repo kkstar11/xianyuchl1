@@ -19,6 +19,10 @@ SET FOREIGN_KEY_CHECKS = 1;
 
 -- ============================================
 -- 插入示例用户 (Insert sample users)
+-- 警告：这些密码是明文存储的，仅用于开发和测试！
+-- WARNING: These passwords are stored in plain text for development/testing ONLY!
+-- 生产环境必须使用加密密码（如 BCrypt）
+-- Production environments MUST use encrypted passwords (e.g., BCrypt)
 -- ============================================
 INSERT INTO users (id, username, password, email, phone, avatar, created_at) VALUES
 (1, '张三', 'password123', 'zhangsan@example.com', '13800138001', NULL, NOW()),
