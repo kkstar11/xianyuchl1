@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${product.title} + ' - 闲鱼二手市场'">商品详情</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a th:href="@{/}">🐟 闲鱼二手市场</a>
+            </div>
+            <ul class="nav-menu">
+                <li><a th:href="@{/}">首页</a></li>
+                <li><a th:href="@{/products}" class="active">商品列表</a></li>
+                <li><a th:href="@{/products/publish}">发布商品</a></li>
+                <li><a th:href="@{/favorites}">我的收藏</a></li>
+                <li><a th:href="@{/orders}">我的订单</a></li>
+                <li><a th:href="@{/addresses}">收货地址</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+        <div class="product-detail">
+            <div class="product-detail-image">
+                <img th:src="${product.imageUrl}" th:alt="${product.title}">
+            </div>
+            <div class="product-detail-info">
+                <h1 th:text="${product.title}">商品标题</h1>
+                <p class="product-price-large">¥<span th:text="${product.price}">0.00</span></p>
+                
+                <div class="product-meta">
+                    <p><strong>新旧程度：</strong><span th:text="${product.condition}">九成新</span></p>
+                    <p><strong>分类：</strong><span th:text="${product.category}">其他</span></p>
+                    <p><strong>状态：</strong><span th:text="${product.status}">可售</span></p>
+                    <p><strong>卖家：</strong><span th:text="${product.seller.username}">卖家</span></p>
+                </div>
+
+                <div class="product-description">
+                    <h3>商品描述</h3>
+                    <p th:text="${product.description}">商品描述</p>
+                </div>
+
+                <div class="product-actions">
+                    <div th:if="${product.status == 'available'}">
+                        <a th:href="@{/orders/create/{id}(id=${product.id})}" class="btn btn-primary">立即购买</a>
+                        
+                        <form th:if="${!isFavorited}" th:action="@{/favorites/add/{id}(id=${product.id})}" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-secondary">❤️ 收藏</button>
+                        </form>
+                        
+                        <form th:if="${isFavorited}" th:action="@{/favorites/remove/{id}(id=${product.id})}" method="post" style="display: inline;">
+                            <input type="hidden" name="returnUrl" th:value="@{/products/{id}(id=${product.id})}">
+                            <button type="submit" class="btn btn-secondary">💔 取消收藏</button>
+                        </form>
+                    </div>
+                    <div th:if="${product.status != 'available'}">
+                        <p class="status-message">此商品已下架</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="reviews-section">
+            <h2>商品评价</h2>
+            <div th:if="${!#lists.isEmpty(reviews)}">
+                <div class="review-card" th:each="review : ${reviews}">
+                    <div class="review-header">
+                        <strong th:text="${review.user.username}">用户</strong>
+                        <span class="review-rating">
+                            <span th:each="i : ${#numbers.sequence(1, 5)}">
+                                <span th:text="${i <= review.rating} ? '⭐' : '☆'">⭐</span>
+                            </span>
+                        </span>
+                        <span class="review-date" th:text="${#temporals.format(review.createdAt, 'yyyy-MM-dd')}">2024-01-01</span>
+                    </div>
+                    <p class="review-comment" th:text="${review.comment}">评价内容</p>
+                </div>
+            </div>
+            <div th:if="${#lists.isEmpty(reviews)}" class="empty-state">
+                <p>暂无评价</p>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 闲鱼二手市场. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title} ? ${title} + ' - 闲鱼二手市场' : '闲鱼二手市场'">闲鱼二手市场</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a th:href="@{/}">🐟 闲鱼二手市场</a>
+            </div>
+            <ul class="nav-menu">
+                <li><a th:href="@{/}">首页</a></li>
+                <li><a th:href="@{/products}">商品列表</a></li>
+                <li><a th:href="@{/products/publish}">发布商品</a></li>
+                <li><a th:href="@{/favorites}">我的收藏</a></li>
+                <li><a th:href="@{/orders}">我的订单</a></li>
+                <li><a th:href="@{/addresses}">收货地址</a></li>
+                <li th:if="${currentUser}">
+                    <span class="user-info">👤 <span th:text="${currentUser.username}">用户</span></span>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+        
+        <div th:replace="${content}"></div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 闲鱼二手市场. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

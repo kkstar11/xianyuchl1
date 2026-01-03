@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>订单详情 - 闲鱼二手市场</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a th:href="@{/}">🐟 闲鱼二手市场</a>
+            </div>
+            <ul class="nav-menu">
+                <li><a th:href="@{/}">首页</a></li>
+                <li><a th:href="@{/products}">商品列表</a></li>
+                <li><a th:href="@{/products/publish}">发布商品</a></li>
+                <li><a th:href="@{/favorites}">我的收藏</a></li>
+                <li><a th:href="@{/orders}" class="active">我的订单</a></li>
+                <li><a th:href="@{/addresses}">收货地址</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+        <h1>订单详情</h1>
+
+        <div class="order-detail">
+            <div class="order-info-section">
+                <h3>订单信息</h3>
+                <p><strong>订单号：</strong><span th:text="${order.orderNumber}">ORD123</span></p>
+                <p><strong>订单状态：</strong><span th:text="${order.status}">pending</span></p>
+                <p><strong>下单时间：</strong><span th:text="${#temporals.format(order.createdAt, 'yyyy-MM-dd HH:mm:ss')}">2024-01-01</span></p>
+                <p><strong>总金额：</strong>¥<span th:text="${order.totalAmount}">0.00</span></p>
+            </div>
+
+            <div class="order-info-section">
+                <h3>商品信息</h3>
+                <div class="order-product-detail">
+                    <img th:src="${order.product.imageUrl}" th:alt="${order.product.title}">
+                    <div>
+                        <h4 th:text="${order.product.title}">商品标题</h4>
+                        <p th:text="${order.product.description}">商品描述</p>
+                        <p class="product-price">¥<span th:text="${order.product.price}">0.00</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="order-info-section">
+                <h3>收货地址</h3>
+                <p><strong>收货人：</strong><span th:text="${order.address.receiverName}">收货人</span></p>
+                <p><strong>联系电话：</strong><span th:text="${order.address.phone}">电话</span></p>
+                <p><strong>详细地址：</strong><span th:text="${order.address.province} + ${order.address.city} + ${order.address.district} + ${order.address.detailAddress}">地址</span></p>
+            </div>
+
+            <div class="order-actions-section">
+                <form th:if="${order.status == 'pending'}" th:action="@{/orders/{id}/pay(id=${order.id})}" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-primary">立即支付</button>
+                </form>
+                
+                <form th:if="${order.status == 'pending'}" th:action="@{/orders/{id}/cancel(id=${order.id})}" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">取消订单</button>
+                </form>
+                
+                <a th:if="${order.status == 'paid'}" th:href="@{/reviews/create/{id}(id=${order.id})}" class="btn btn-primary">评价商品</a>
+                
+                <a th:href="@{/orders}" class="btn btn-secondary">返回订单列表</a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 闲鱼二手市场. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
