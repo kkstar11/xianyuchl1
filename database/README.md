@@ -99,9 +99,11 @@ mysql -u root -p < database/data.sql
 
 ```properties
 # 数据库配置 (Database Configuration)
-spring.datasource.url=jdbc:mysql://localhost:3306/xianyudb?useSSL=false&serverTimezone=UTC&characterEncoding=utf8mb4
-spring.datasource.username=your_username
-spring.datasource.password=your_password
+# 注意：生产环境建议启用 SSL 加密连接
+# Note: Enable SSL for production environments
+spring.datasource.url=jdbc:mysql://localhost:3306/xianyudb?useSSL=true&serverTimezone=Asia/Shanghai&characterEncoding=utf8mb4
+spring.datasource.username=xianyuapp
+spring.datasource.password=your_secure_password
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 
 # JPA 配置 (JPA Configuration)
