@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.time.LocalDateTime;
 
 @Entity
@@ -31,6 +33,8 @@ public class Review {
     private Product product;
     
     @Column(nullable = false)
+    @Min(1)
+    @Max(5)
     private Integer rating; // 1-5 stars
     
     @Column(columnDefinition = "TEXT")
