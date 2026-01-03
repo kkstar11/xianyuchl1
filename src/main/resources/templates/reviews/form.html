@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>评价商品 - 闲鱼二手市场</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a th:href="@{/}">🐟 闲鱼二手市场</a>
+            </div>
+            <ul class="nav-menu">
+                <li><a th:href="@{/}">首页</a></li>
+                <li><a th:href="@{/products}">商品列表</a></li>
+                <li><a th:href="@{/products/publish}">发布商品</a></li>
+                <li><a th:href="@{/favorites}">我的收藏</a></li>
+                <li><a th:href="@{/orders}" class="active">我的订单</a></li>
+                <li><a th:href="@{/addresses}">收货地址</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+        <h1>评价商品</h1>
+
+        <div class="review-form-container">
+            <div class="order-info-section">
+                <h3>商品信息</h3>
+                <div class="order-product-detail">
+                    <img th:src="${order.product.imageUrl}" th:alt="${order.product.title}">
+                    <div>
+                        <h4 th:text="${order.product.title}">商品标题</h4>
+                        <p class="product-price">¥<span th:text="${order.product.price}">0.00</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <form class="form" th:action="@{/reviews/create}" method="post">
+                <input type="hidden" name="orderId" th:value="${order.id}">
+                
+                <div class="form-group">
+                    <label for="rating">评分 *</label>
+                    <div class="rating-input">
+                        <input type="radio" name="rating" value="5" id="rating5" required>
+                        <label for="rating5">⭐⭐⭐⭐⭐ 非常满意</label>
+                        
+                        <input type="radio" name="rating" value="4" id="rating4" required>
+                        <label for="rating4">⭐⭐⭐⭐ 满意</label>
+                        
+                        <input type="radio" name="rating" value="3" id="rating3" required>
+                        <label for="rating3">⭐⭐⭐ 一般</label>
+                        
+                        <input type="radio" name="rating" value="2" id="rating2" required>
+                        <label for="rating2">⭐⭐ 不满意</label>
+                        
+                        <input type="radio" name="rating" value="1" id="rating1" required>
+                        <label for="rating1">⭐ 非常不满意</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="comment">评价内容 *</label>
+                    <textarea id="comment" name="comment" required placeholder="请分享您的使用体验" rows="5"></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">提交评价</button>
+                    <a th:href="@{/orders/{id}(id=${order.id})}" class="btn btn-secondary">取消</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 闲鱼二手市场. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

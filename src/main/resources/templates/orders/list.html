@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的订单 - 闲鱼二手市场</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a th:href="@{/}">🐟 闲鱼二手市场</a>
+            </div>
+            <ul class="nav-menu">
+                <li><a th:href="@{/}">首页</a></li>
+                <li><a th:href="@{/products}">商品列表</a></li>
+                <li><a th:href="@{/products/publish}">发布商品</a></li>
+                <li><a th:href="@{/favorites}">我的收藏</a></li>
+                <li><a th:href="@{/orders}" class="active">我的订单</a></li>
+                <li><a th:href="@{/addresses}">收货地址</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+        <h1>我的订单</h1>
+
+        <div th:if="${!#lists.isEmpty(orders)}">
+            <div class="order-card" th:each="order : ${orders}">
+                <div class="order-header">
+                    <span class="order-number">订单号：<span th:text="${order.orderNumber}">ORD123</span></span>
+                    <span class="order-status" th:text="${order.status}">pending</span>
+                </div>
+                <div class="order-content">
+                    <div class="order-product">
+                        <img th:src="${order.product.imageUrl}" th:alt="${order.product.title}">
+                        <div class="order-product-info">
+                            <h3 th:text="${order.product.title}">商品标题</h3>
+                            <p class="order-price">¥<span th:text="${order.totalAmount}">0.00</span></p>
+                        </div>
+                    </div>
+                    <div class="order-address">
+                        <p><strong>收货地址：</strong></p>
+                        <p th:text="${order.address.receiverName} + ' ' + ${order.address.phone}">收货人</p>
+                        <p th:text="${order.address.province} + ${order.address.city} + ${order.address.district} + ${order.address.detailAddress}">地址</p>
+                    </div>
+                </div>
+                <div class="order-actions">
+                    <a th:href="@{/orders/{id}(id=${order.id})}" class="btn btn-small">查看详情</a>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${#lists.isEmpty(orders)}" class="empty-state">
+            <p>您还没有订单</p>
+            <a th:href="@{/products}" class="btn btn-primary">去购物</a>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 闲鱼二手市场. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

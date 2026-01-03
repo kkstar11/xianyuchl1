@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品列表 - 闲鱼二手市场</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a th:href="@{/}">🐟 闲鱼二手市场</a>
+            </div>
+            <ul class="nav-menu">
+                <li><a th:href="@{/}">首页</a></li>
+                <li><a th:href="@{/products}" class="active">商品列表</a></li>
+                <li><a th:href="@{/products/publish}">发布商品</a></li>
+                <li><a th:href="@{/favorites}">我的收藏</a></li>
+                <li><a th:href="@{/orders}">我的订单</a></li>
+                <li><a th:href="@{/addresses}">收货地址</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>商品列表</h1>
+
+        <div class="product-grid">
+            <div class="product-card" th:each="product : ${products}">
+                <div class="product-image">
+                    <img th:src="${product.imageUrl}" th:alt="${product.title}">
+                    <span class="product-status" th:text="${product.status}">available</span>
+                </div>
+                <div class="product-info">
+                    <h3 th:text="${product.title}">商品标题</h3>
+                    <p class="product-price">¥<span th:text="${product.price}">0.00</span></p>
+                    <p class="product-condition" th:text="${product.condition}">九成新</p>
+                    <p class="product-category">分类：<span th:text="${product.category}">其他</span></p>
+                    <a th:href="@{/products/{id}(id=${product.id})}" class="btn btn-small">查看详情</a>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${#lists.isEmpty(products)}" class="empty-state">
+            <p>暂无商品</p>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 闲鱼二手市场. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
