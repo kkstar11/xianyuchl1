@@ -15,12 +15,21 @@
             <ul class="nav-menu">
                 <li><a th:href="@{/}" class="active">首页</a></li>
                 <li><a th:href="@{/products}">商品列表</a></li>
-                <li><a th:href="@{/products/publish}">发布商品</a></li>
-                <li><a th:href="@{/favorites}">我的收藏</a></li>
-                <li><a th:href="@{/orders}">我的订单</a></li>
-                <li><a th:href="@{/addresses}">收货地址</a></li>
-                <li th:if="${currentUser}">
+                <li th:if="${currentUser != null}"><a th:href="@{/products/publish}">发布商品</a></li>
+                <li th:if="${currentUser != null}"><a th:href="@{/favorites}">我的收藏</a></li>
+                <li th:if="${currentUser != null}"><a th:href="@{/orders}">我的订单</a></li>
+                <li th:if="${currentUser != null}"><a th:href="@{/addresses}">收货地址</a></li>
+                <li th:if="${currentUser != null}">
                     <span class="user-info">👤 <span th:text="${currentUser.username}">用户</span></span>
+                </li>
+                <li th:if="${currentUser != null}">
+                    <a th:href="@{/auth/logout}">退出</a>
+                </li>
+                <li th:if="${currentUser == null}">
+                    <a th:href="@{/auth/login}">登录</a>
+                </li>
+                <li th:if="${currentUser == null}">
+                    <a th:href="@{/auth/register}">注册</a>
                 </li>
             </ul>
         </div>

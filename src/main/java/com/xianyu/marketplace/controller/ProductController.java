@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
@@ -41,7 +42,7 @@ public class ProductController {
     }
     
     @GetMapping("/{id}")
-    public String productDetail(@PathVariable Long id, Model model) {
+    public String productDetail(@PathVariable Long id, Model model, HttpSession session) {
         Optional<Product> productOpt = productService.getProductById(id);
         if (productOpt.isEmpty()) {
             return "redirect:/products";
@@ -54,8 +55,8 @@ public class ProductController {
         List<Review> reviews = reviewService.getReviewsByProduct(product);
         model.addAttribute("reviews", reviews);
         
-        // Check if favorited (demo - using first user)
-        User currentUser = userService.getAllUsers().stream().findFirst().orElse(null);
+        // Check if favorited (get from session)
+        User currentUser = (User) session.getAttribute("currentUser");
         if (currentUser != null) {
             boolean isFavorited = favoriteService.isFavorited(currentUser, product);
             model.addAttribute("isFavorited", isFavorited);
@@ -66,19 +67,14 @@ public class ProductController {
     }
     
     @GetMapping("/publish")
-    public String publishForm(Model model) {
-        model.addAttribute("product", new Product());
+    public String publishForm(Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+        User currentUser = (User) session.getAttribute("currentUser");
+        if (currentUser == null) {
+            redirectAttributes.addFlashAttribute("error", "请先登录");
+            return "redirect:/auth/login";
+        }
         
-        // Get current user (demo - using first user or create one)
-        User currentUser = userService.getAllUsers().stream()
-                .findFirst()
-                .orElseGet(() -> {
-                    User user = new User();
-                    user.setUsername("demo_user");
-                    user.setEmail("demo@example.com");
-                    user.setPassword("password");
-                    return userService.createUser(user);
-                });
+        model.addAttribute("product", new Product());
         model.addAttribute("currentUser", currentUser);
         
         return "products/publish";
@@ -91,16 +87,15 @@ public class ProductController {
                                 @RequestParam String category,
                                 @RequestParam String condition,
                                 @RequestParam(required = false) String imageUrl,
+                                HttpSession session,
                                 RedirectAttributes redirectAttributes) {
         
-        // Get current user (demo - using first user)
-        User currentUser = userService.getAllUsers().stream()
-                .findFirst()
-                .orElse(null);
+        // Get current user from session
+        User currentUser = (User) session.getAttribute("currentUser");
         
         if (currentUser == null) {
             redirectAttributes.addFlashAttribute("error", "请先登录");
-            return "redirect:/products/publish";
+            return "redirect:/auth/login";
         }
         
         Product product = new Product();
@@ -120,14 +115,13 @@ public class ProductController {
     }
     
     @GetMapping("/my")
-    public String myProducts(Model model) {
-        // Get current user (demo - using first user)
-        User currentUser = userService.getAllUsers().stream()
-                .findFirst()
-                .orElse(null);
+    public String myProducts(Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+        // Get current user from session
+        User currentUser = (User) session.getAttribute("currentUser");
         
         if (currentUser == null) {
-            return "redirect:/";
+            redirectAttributes.addFlashAttribute("error", "请先登录");
+            return "redirect:/auth/login";
         }
         
         List<Product> products = productService.getProductsBySeller(currentUser);
